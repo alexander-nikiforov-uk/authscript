@@ -4,8 +4,9 @@ echo "What would you like to do?"
 echo "1) Configure UFW firewall (allow ports 80, 443, 22)"
 echo "2) Add SSH public key for root login"
 echo "3) Change swap file size"
+echo "4) Set DNS servers to 1.1.1.1 and 8.8.8.8"
 echo ""
-read -p "Enter your choice [1-3]: " choice
+read -p "Enter your choice [1-4]: " choice
 
 case "$choice" in
   1)
@@ -71,6 +72,15 @@ case "$choice" in
     sudo swapon /swapfile
     echo "Swap configured:"
     swapon --show
+    ;;
+  4)
+    echo "Setting DNS servers to 1.1.1.1 and 8.8.8.8..."
+    RESOLV="/etc/resolv.conf"
+    sudo chattr -i "$RESOLV" 2>/dev/null
+    echo -e "nameserver 1.1.1.1\nnameserver 8.8.8.8" | sudo tee "$RESOLV" > /dev/null
+    sudo chattr +i "$RESOLV"
+    echo "DNS configured:"
+    cat "$RESOLV"
     ;;
   *)
     echo "Invalid choice. Exiting."
