@@ -5,8 +5,9 @@ echo "1) Configure UFW firewall (allow ports 80, 443, 22)"
 echo "2) Add SSH public key for root login"
 echo "3) Change swap file size"
 echo "4) Set DNS servers to 1.1.1.1 and 8.8.8.8"
+echo "5) Set Docker DNS to 1.1.1.1 and 8.8.8.8"
 echo ""
-read -p "Enter your choice [1-4]: " choice
+read -p "Enter your choice [1-5]: " choice
 
 case "$choice" in
   1)
@@ -81,6 +82,16 @@ case "$choice" in
     sudo chattr +i "$RESOLV"
     echo "DNS configured:"
     cat "$RESOLV"
+    ;;
+  5)
+    echo "Configuring Docker DNS..."
+    sudo mkdir -p /etc/docker
+    echo '{
+  "dns": ["1.1.1.1", "8.8.8.8"],
+  "mtu": 1400
+}' | sudo tee /etc/docker/daemon.json > /dev/null
+    sudo systemctl restart docker
+    echo "Docker DNS configured."
     ;;
   *)
     echo "Invalid choice. Exiting."
