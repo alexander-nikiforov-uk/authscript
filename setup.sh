@@ -3,8 +3,9 @@
 echo "What would you like to do?"
 echo "1) Configure UFW firewall (allow ports 80, 443, 22)"
 echo "2) Add SSH public key for root login"
+echo "3) Change swap file size"
 echo ""
-read -p "Enter your choice [1-2]: " choice
+read -p "Enter your choice [1-3]: " choice
 
 case "$choice" in
   1)
@@ -54,6 +55,22 @@ case "$choice" in
     echo "Restarting SSH service..."
     systemctl restart sshd
     echo "Done."
+    ;;
+  3)
+    read -p "Enter desired swap size (e.g. 2G, 512M): " swapsize
+    if [ -z "$swapsize" ]; then
+      echo "No size provided. Exiting."
+      exit 1
+    fi
+    echo "Configuring ${swapsize} swap file..."
+    sudo swapoff /swapfile
+    sudo rm /swapfile
+    sudo fallocate -l "$swapsize" /swapfile
+    sudo chmod 600 /swapfile
+    sudo mkswap /swapfile
+    sudo swapon /swapfile
+    echo "Swap configured:"
+    swapon --show
     ;;
   *)
     echo "Invalid choice. Exiting."
