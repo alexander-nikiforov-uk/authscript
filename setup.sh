@@ -87,9 +87,9 @@ case "$choice" in
     echo "Configuring Docker DNS..."
     sudo mkdir -p /etc/docker
     echo '{
-  "dns": ["1.1.1.1", "8.8.8.8"],
-  "mtu": 1400
-}' | sudo tee /etc/docker/daemon.json > /dev/null
+      "dns": ["1.1.1.1", "8.8.8.8"],
+      "mtu": 1400
+    }' | sudo tee /etc/docker/daemon.json > /dev/null
     sudo systemctl restart docker
     echo "Docker DNS configured."
     ;;
